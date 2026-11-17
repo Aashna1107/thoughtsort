@@ -1,0 +1,223 @@
+/* ThoughtSort - Modern Intelligent AI Voice Notes & Smart To-Do App */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-light: #e0e7ff;
+  --primary-glow: rgba(99, 102, 241, 0.25);
+  
+  --task-color: #3b82f6;
+  --task-bg: #eff6ff;
+  --reminder-color: #f59e0b;
+  --reminder-bg: #fffbeb;
+  --idea-color: #8b5cf6;
+  --idea-bg: #f5f3ff;
+  --goal-color: #10b981;
+  --goal-bg: #ecfdf5;
+  --note-color: #64748b;
+  --note-bg: #f8fafc;
+
+  --bg-main: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --border: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] {
+  --primary: #818cf8;
+  --primary-hover: #6366f1;
+  --primary-light: #1e1b4b;
+  --primary-glow: rgba(129, 140, 248, 0.3);
+
+  --task-color: #60a5fa;
+  --task-bg: rgba(30, 58, 138, 0.3);
+  --reminder-color: #fbbf24;
+  --reminder-bg: rgba(120, 53, 15, 0.3);
+  --idea-color: #a78bfa;
+  --idea-bg: rgba(76, 29, 149, 0.3);
+  --goal-color: #34d399;
+  --goal-bg: rgba(6, 78, 59, 0.3);
+  --note-color: #94a3b8;
+  --note-bg: rgba(30, 41, 59, 0.4);
+
+  --bg-main: #0b0f19;
+  --bg-surface: #111827;
+  --bg-subtle: #1f2937;
+  --border: #1f2937;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --card-shadow-hover: 0 12px 20px -3px rgba(0, 0, 0, 0.6);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  overflow-x: hidden;
+}
+
+/* Header & Nav */
+.header-glass {
+  backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid var(--border);
+}
+[data-theme="dark"] .header-glass {
+  background-color: rgba(17, 24, 39, 0.85);
+}
+
+/* Category Badges */
+.badge-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.badge-category.task { color: var(--task-color); background: var(--task-bg); border: 1px solid rgba(59, 130, 246, 0.2); }
+.badge-category.reminder { color: var(--reminder-color); background: var(--reminder-bg); border: 1px solid rgba(245, 158, 11, 0.25); }
+.badge-category.idea { color: var(--idea-color); background: var(--idea-bg); border: 1px solid rgba(139, 92, 246, 0.25); }
+.badge-category.goal { color: var(--goal-color); background: var(--goal-bg); border: 1px solid rgba(16, 185, 129, 0.25); }
+.badge-category.note { color: var(--note-color); background: var(--note-bg); border: 1px solid rgba(100, 116, 139, 0.25); }
+
+/* Priority Badges */
+.badge-priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.priority-high { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+.priority-medium { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+.priority-low { background: rgba(59, 130, 246, 0.12); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); }
+.priority-none { background: rgba(148, 163, 184, 0.12); color: #94a3b8; }
+
+/* Pulse animation for active mic */
+@keyframes micPulse {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); transform: scale(1); }
+  50% { box-shadow: 0 0 0 18px rgba(239, 68, 68, 0); transform: scale(1.05); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); transform: scale(1); }
+}
+
+.mic-active {
+  animation: micPulse 1.6s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+
+/* Audio visualizer canvas */
+#audioCanvas {
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.04);
+}
+[data-theme="dark"] #audioCanvas {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Wave shimmer for processing */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer-active {
+  background: linear-gradient(90deg, var(--bg-surface) 25%, var(--primary-light) 50%, var(--bg-surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Item Card Animation */
+.item-card {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+.item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.item-card.completed {
+  opacity: 0.55;
+  background-color: rgba(241, 245, 249, 0.5);
+}
+[data-theme="dark"] .item-card.completed {
+  background-color: rgba(31, 41, 55, 0.4);
+}
+
+.item-card.completed .item-title {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-subtle);
+}
+
+/* Glass Modal */
+.modal-overlay {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+/* Tag Pills */
+.tag-pill {
+  font-size: 0.72rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.15s ease;
+}
+.tag-pill:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Tooltip & micro interactions */
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Audio Player styling */
+.mini-player audio {
+  height: 32px;
+  filter: contrast(90%);
+}
